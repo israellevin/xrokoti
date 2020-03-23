@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>xrokoti</title>
+        <style>
+div.kid{
+    position: absolute;
+    width: 20em;
+    height: 10em;
+}
+
+div.kid > img{
+    width: 100%;
+}
+div.xaoclass{
+}
+div.xbuclass{
+}
+        </style>
+    </head>
+    <body>
+        <div class="kid xaoclass" id="xaoid">
+            <img src="xao.png" alt="photograph of Michael">
+        </div>
+        <div class="kid xbuclass" id="xbuid">
+            <img src="xbu.png" alt="photograph of Uriel">
+        </div>
+        <script>
+function moveKid(kid, top, left){
+    console.log(kid);
+    kid.style.top = top + 'px';
+    kid.style.left = left + 'px';
+}
+
+function dropKid(kid, top){
+    kid.style.top = top + 'px';
+    setTimeout(
+        function(){
+            let topString = kid.style.top;
+            let topInteger = parseInt(topString.substr(0, topString.length - 2), 10);
+            if(topInteger >= 505) {
+                dropKid(kid, top - 411);
+            } else {
+                dropKid(kid, top + 10);
+            }
+        },
+        30);
+}
+
+window.onload = function(){
+    let xao = document.getElementById('xaoid');
+    let xbu = document.getElementById('xbuid');
+    moveKid(xao, 0, 1750);
+    moveKid(xbu, 0, 0);
+    xao.onclick = function(){
+        dropKid(xbu, 0);
+    }
+    xbu.onclick = function(){
+        dropKid(xao, 0);
+    }
+};
+
+        </script>
+    </body>
+</html>
