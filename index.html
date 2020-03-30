@@ -13,25 +13,16 @@ div.kid{
 div.kid > img{
     width: 100%;
 }
-div.xaoclass{
-}
-div.xbuclass{
-}
         </style>
     </head>
     <body>
-        <div class="kid xaoclass" id="xaoid">
+        <div class="kid" id="xaoid">
             <img src="xao.png" alt="photograph of Michael">
         </div>
-        <div class="kid xbuclass" id="xbuid">
+        <div class="kid" id="xbuid">
             <img src="xbu.png" alt="photograph of Uriel">
         </div>
         <script>
-function moveKid(kid, top, left){
-    console.log(kid);
-    kid.style.top = top + 'px';
-    kid.style.left = left + 'px';
-}
 
 function dropKid(kid, top){
     kid.style.top = top + 'px';
@@ -51,13 +42,20 @@ function dropKid(kid, top){
 window.onload = function(){
     let xao = document.getElementById('xaoid');
     let xbu = document.getElementById('xbuid');
-    moveKid(xao, 0, 1750);
-    moveKid(xbu, 0, 0);
     xao.onclick = function(){
         dropKid(xbu, 0);
     }
     xbu.onclick = function(){
         dropKid(xao, 0);
+    }
+};
+
+
+let Kid = {
+    element: document.getElementById('xbuid'),
+    move: function(top, left){
+        this.element.style.top = top + 'px';
+        this.element.style.left = left + 'px';
     }
 };
 
