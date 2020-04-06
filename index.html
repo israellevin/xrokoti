@@ -16,49 +16,57 @@ div.kid > img{
         </style>
     </head>
     <body>
-        <div class="kid" id="xaoid">
+        <div class="kid" id="xaoDiv">
             <img src="xao.png" alt="photograph of Michael">
         </div>
-        <div class="kid" id="xbuid">
+        <div class="kid" id="xbuDiv">
             <img src="xbu.png" alt="photograph of Uriel">
         </div>
         <script>
 
-function dropKid(kid, top){
-    kid.style.top = top + 'px';
-    setTimeout(
-        function(){
-            let topString = kid.style.top;
-            let topInteger = parseInt(topString.substr(0, topString.length - 2), 10);
-            if(topInteger >= 505) {
-                dropKid(kid, top - 411);
-            } else {
-                dropKid(kid, top + 10);
-            }
-        },
-        30);
+function Kid(name, elementId, startPosition){
+    let element = document.getElementById(elementId);
+
+    function move(position){
+        element.style.top = position.top + 'px';
+        element.style.left = position.left + 'px';
+    }
+
+    function drop(top){
+        element.style.top = top + 'px';
+        setTimeout(
+            function(){
+                let topString = element.style.top;
+                let topInteger = parseInt(topString.substr(0, topString.length - 2), 10);
+                if(topInteger >= 505) {
+                    drop(top - 411);
+                } else {
+                    drop(top + 10);
+                }
+            },
+            30
+        );
+    }
+
+    element.onclick = function(){
+        drop(0);
+    }
+    move(startPosition);
+
+    return {
+        name: name,
+        element: element,
+        position: startPosition,
+        velocity: {down: 0, right: 0},
+        move: move,
+        drop: drop
+    }
 }
 
 window.onload = function(){
-    let xao = document.getElementById('xaoid');
-    let xbu = document.getElementById('xbuid');
-    xao.onclick = function(){
-        dropKid(xbu, 0);
-    }
-    xbu.onclick = function(){
-        dropKid(xao, 0);
-    }
+    let xao = Kid('xao', 'xaoDiv', {top: 0, left: 1750});
+    let xbu = Kid('xbu', 'xbuDiv', {top: 0, left: 0});
 };
-
-
-let Kid = {
-    element: document.getElementById('xbuid'),
-    move: function(top, left){
-        this.element.style.top = top + 'px';
-        this.element.style.left = left + 'px';
-    }
-};
-
         </script>
     </body>
 </html>
