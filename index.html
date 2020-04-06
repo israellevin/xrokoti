@@ -25,43 +25,37 @@ div.kid > img{
         <script>
 
 function Kid(name, elementId, startPosition){
-    let element = document.getElementById(elementId);
-
-    function move(position){
-        element.style.top = position.top + 'px';
-        element.style.left = position.left + 'px';
-    }
-
-    function drop(top){
-        element.style.top = top + 'px';
-        setTimeout(
-            function(){
-                let topString = element.style.top;
-                let topInteger = parseInt(topString.substr(0, topString.length - 2), 10);
-                if(topInteger >= 505) {
-                    drop(top - 411);
-                } else {
-                    drop(top + 10);
-                }
-            },
-            30
-        );
-    }
-
-    element.onclick = function(){
-        drop(0);
-    }
-    move(startPosition);
-
-    return {
+    let newKid = {
         name: name,
-        element: element,
+        element: document.getElementById(elementId),
         position: startPosition,
         velocity: {down: 0, right: 0},
-        move: move,
-        drop: drop
     }
+
+    function draw(){
+        newKid.element.style.top = newKid.position.top + 'px';
+        newKid.element.style.left = newKid.position.left + 'px';
+    };
+    draw();
+
+    function step(){
+        newKid.position.top += newKid.velocity.down;
+        newKid.position.left += newKid.velocity.right;
+        if(newKid.position.top < 500){
+            newKid.velocity.down += 0.5;
+        } else {
+            newKid.velocity.down = -newKid.velocity.down;
+        }
+        draw();
+    }
+
+    newKid.element.onclick = function(){
+        setInterval(step, 10);
+    };
+
+    return newKid;
 }
+
 
 window.onload = function(){
     let xao = Kid('xao', 'xaoDiv', {top: 0, left: 1750});
