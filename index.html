@@ -22,6 +22,7 @@ div.kid > img{
         <div class="kid" id="xbuDiv">
             <img src="xbu.png" alt="photograph of Uriel">
         </div>
+        <script src="howler.min.js"></script>
         <script>
 
 function Kid(name, elementId, startPosition){
@@ -30,7 +31,9 @@ function Kid(name, elementId, startPosition){
         element: document.getElementById(elementId),
         position: startPosition,
         velocity: {down: 0, right: 0},
+        bounceSound: new Howl({src: ['boing.ogg']})
     }
+    newKid.bounceSound.load();
 
     function draw(){
         newKid.element.style.top = newKid.position.top + 'px';
@@ -39,12 +42,16 @@ function Kid(name, elementId, startPosition){
     draw();
 
     function step(){
+        console.log(newKid.velocity);
         newKid.position.top += newKid.velocity.down;
         newKid.position.left += newKid.velocity.right;
-        if(newKid.position.top < 500){
-            newKid.velocity.down += 0.5;
+
+        if(newKid.position.top < 1500){
+            newKid.velocity.down += 1;
         } else {
-            newKid.velocity.down = -newKid.velocity.down;
+            newKid.bounceSound.volume(newKid.velocity.down / 60);
+            newKid.bounceSound.play();
+            newKid.velocity.down = newKid.velocity.down * -0.98;
         }
         draw();
     }
@@ -56,10 +63,9 @@ function Kid(name, elementId, startPosition){
     return newKid;
 }
 
-
 window.onload = function(){
     let xao = Kid('xao', 'xaoDiv', {top: 0, left: 1750});
-    let xbu = Kid('xbu', 'xbuDiv', {top: 0, left: 0});
+    Kid('xbu', 'xbuDiv', {top: 0, left: 0});
 };
         </script>
     </body>
