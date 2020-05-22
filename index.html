@@ -16,24 +16,37 @@ div.kid > img{
         </style>
     </head>
     <body>
-        <div class="kid" id="xaoDiv">
-            <img src="xao.png" alt="photograph of Michael">
+        <div id="controlPanel">
+            <input id="characterSelector" placeholder="character name">
+            <input id="angleSelector" placeholder="angle">
+            <input id="speedSelector" placeholder="speed">
+            <input type="button" id="launcherButton" value="launch">
         </div>
-        <div class="kid" id="xbuDiv">
-            <img src="xbu.png" alt="photograph of Uriel">
-        </div>
+
         <script src="howler.min.js"></script>
         <script>
 
-function Kid(name, elementId, startPosition){
+function makeNewKid(name, startPosition){
+    if(name !== 'xao' && name !== 'xbu' && name !== 'abu'){
+        console.error('unknown character ' + name);
+        return false;
+    }
+
+
     let newKid = {
         name: name,
-        element: document.getElementById(elementId),
+        element: document.createElement('div'),
         position: startPosition,
         velocity: {down: 0, right: 0},
+        velocityHistory: [],
         bounceSound: new Howl({src: ['boing.ogg']})
     }
     newKid.bounceSound.load();
+    newKid.element.classList.add('kid');
+    let image = document.createElement('img');
+    image.src = name + '.png'
+    newKid.element.appendChild(image);
+    document.body.appendChild(newKid.element);
 
     function draw(){
         newKid.element.style.top = newKid.position.top + 'px';
@@ -41,8 +54,24 @@ function Kid(name, elementId, startPosition){
     };
     draw();
 
+    function checkIfStopped(){
+        let velocitySum = 0;
+        for(let velocity of newKid.velocityHistory){
+            velocitySum += velocity.down;
+        }
+        if(velocitySum < 1){
+            clearInterval(newKid.stepInterval);
+            console.log('stopped');
+        }
+    }
+
     function step(){
-        console.log(newKid.velocity);
+        newKid.velocityHistory.push(newKid.velocity);
+        if(newKid.velocityHistory.length > 100){
+            newKid.velocityHistory.shift();
+            checkIfStopped();
+        }
+
         newKid.position.top += newKid.velocity.down;
         newKid.position.left += newKid.velocity.right;
 
@@ -57,15 +86,20 @@ function Kid(name, elementId, startPosition){
     }
 
     newKid.element.onclick = function(){
-        setInterval(step, 10);
+        newKid.stepInterval = setInterval(step, 10);
     };
 
     return newKid;
 }
 
 window.onload = function(){
-    let xao = Kid('xao', 'xaoDiv', {top: 0, left: 1750});
-    Kid('xbu', 'xbuDiv', {top: 0, left: 0});
+    document.getElementById('launcherButton').onclick = function() {
+        let kid = makeNewKid(document.getElementById('characterSelector').value, {top: 100, left: 0});
+        if(kid !== false) {
+            document.getElementById('controlPanel').style.display = 'none';
+        }
+
+    }
 };
         </script>
     </body>
